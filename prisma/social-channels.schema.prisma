@@ -1,0 +1,183 @@
+// Social Channel Management Schema
+// Extends Prisma schema with Playwright automation capabilities
+
+model SocialChannel {
+  id                String      @id @default(cuid())
+  name              String
+  platform          SocialPlatform
+  accountEmail      String
+  displayName       String?
+  profileUrl        String?
+  
+  // Authentication
+  sessionData       String?     @db.Text // Encrypted session JSON
+  sessionExpiry     DateTime?
+  isAuthenticated   Boolean     @default(false)
+  lastLoginAt       DateTime?
+  
+  // Permissions & Features
+  canPost           Boolean     @default(false)
+  canSchedule       Boolean     @default(false)
+  canAnalytics      Boolean     @default(false)
+  
+  // Connection status
+  status            ChannelStatus @default(DISCONNECTED)
+  lastSyncAt        DateTime?
+  errorLog          String?     @db.Text
+  
+  // Company association
+  companyId         String
+  company           Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  // Related content & workflows
+  scheduledPosts    ScheduledPost[]
+  publishedContent  PublishedContent[]
+  automationRuns    AutomationRun[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@unique([companyId, platform, accountEmail])
+  @@index([companyId])
+  @@index([platform])
+  @@index([status])
+}
+
+enum SocialPlatform {
+  YOUTUBE
+  TIKTOK
+  INSTAGRAM
+  FACEBOOK
+  TWITTER
+  LINKEDIN
+  THREADS
+}
+
+enum ChannelStatus {
+  DISCONNECTED
+  CONNECTING
+  AUTHENTICATED
+  SESSION_EXPIRED
+  ERROR
+  SUSPENDED
+}
+
+model ScheduledPost {
+  id                String      @id @default(cuid())
+  title             String?
+  content           String      @db.Text
+  mediaUrls         String[]    // URLs to media files
+  
+  // Scheduling
+  scheduledFor      DateTime
+  publishedAt       DateTime?
+  status            PostStatus  @default(SCHEDULED)
+  
+  // Platform specific
+  channelId         String
+  channel           SocialChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  // Metadata
+  hashtags          String[]
+  mentions          String[]
+  captions          String?     @db.Text
+  
+  // Error handling
+  errorMessage      String?
+  retryCount        Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@index([channelId])
+  @@index([status])
+  @@index([scheduledFor])
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  FAILED
+  CANCELLED
+}
+
+model PublishedContent {
+  id                String      @id @default(cuid())
+  platformPostId    String
+  title             String?
+  content           String      @db.Text
+  mediaUrls         String[]
+  
+  channelId         String
+  channel           SocialChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  // Analytics
+  views             Int         @default(0)
+  likes             Int         @default(0)
+  comments          Int         @default(0)
+  shares            Int         @default(0)
+  impressions       Int         @default(0)
+  
+  // Metadata
+  publishedUrl      String?
+  publishedAt       DateTime
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@unique([channelId, platformPostId])
+  @@index([channelId])
+}
+
+model AutomationRun {
+  id                String      @id @default(cuid())
+  channelId         String
+  channel           SocialChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  workflowType      WorkflowType
+  status            RunStatus   @default(PENDING)
+  
+  // Workflow context
+  inputData         String      @db.Text // JSON
+  outputData        String?     @db.Text // JSON
+  
+  // Error handling
+  errorMessage      String?
+  stackTrace        String?     @db.Text
+  
+  // Execution
+  startedAt         DateTime?
+  completedAt       DateTime?
+  duration          Int?        // milliseconds
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@index([channelId])
+  @@index([status])
+}
+
+enum WorkflowType {
+  LOGIN
+  UPLOAD_CONTENT
+  SCHEDULE_POST
+  COLLECT_ANALYTICS
+  DISCONNECT_CHANNEL
+  TEST_CONNECTION
+  REFRESH_SESSION
+}
+
+enum RunStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  RETRY
+  CANCELLED
+}
+
+// Update Company model to include social channels
+// Add this relation to existing Company model:
+// socialChannels   SocialChannel[]

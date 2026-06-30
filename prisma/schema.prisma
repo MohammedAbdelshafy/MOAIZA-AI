@@ -1,0 +1,298 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  country       String
+  city          String
+  phone         String
+  logo          String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  users         User[]
+  tenders       Tender[]
+  materials     Material[]
+  suppliers     Supplier[]
+  bids          HistoricalBid[]
+  
+  @@index([email])
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          Role       @default(ESTIMATOR)
+  companyId     String
+  company       Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  isActive      Boolean    @default(true)
+  lastLogin     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([companyId])
+  @@index([email])
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  ESTIMATOR
+  VIEWER
+}
+
+model Tender {
+  id              String     @id @default(cuid())
+  title           String
+  description     String?
+  clientName      String
+  projectLocation String
+  status          TenderStatus @default(DRAFT)
+  
+  companyId       String
+  company         Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  // File references
+  files           TenderFile[]
+  
+  // BOQ data
+  boqItems        BOQItem[]
+  
+  // Cost analysis
+  estimatedCost   Float?
+  recommendedBid  Float?
+  expectedMargin  Float?
+  riskScore       Int?      @default(0)
+  
+  // Strategy
+  bidStrategy     BidStrategy @default(BALANCED)
+  
+  // Historical
+  bids            HistoricalBid[]
+  
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  
+  @@index([companyId])
+  @@index([status])
+}
+
+enum TenderStatus {
+  DRAFT
+  UPLOADED
+  ANALYZED
+  REVIEWED
+  BID_READY
+  SUBMITTED
+  WON
+  LOST
+}
+
+enum BidStrategy {
+  AGGRESSIVE
+  BALANCED
+  CONSERVATIVE
+}
+
+model TenderFile {
+  id            String   @id @default(cuid())
+  filename      String
+  fileType      String   // pdf, excel, docx, zip
+  fileSize      Int
+  
+  tenderId      String
+  tender        Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  
+  // Supabase Storage path
+  storagePath   String
+  
+  uploadedAt    DateTime @default(now())
+  
+  @@index([tenderId])
+}
+
+model BOQItem {
+  id              String   @id @default(cuid())
+  
+  tenderId        String
+  tender          Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  
+  // Item details
+  description     String
+  quantity        Float
+  unit            String
+  specifications  String?
+  
+  // Pricing
+  unitRate        Float?
+  totalCost       Float?
+  
+  // AI Analysis
+  confidence      Float    @default(0.8) // 0-1 scale
+  tradeCategory   String?  // e.g., "Concrete", "Steel", "Labor"
+  sourceReference String?  // Reference to source document
+  
+  // Flags
+  isDuplicate     Boolean  @default(false)
+  hasMissingInfo  Boolean  @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([tenderId])
+  @@index([tradeCategory])
+}
+
+model Material {
+  id            String   @id @default(cuid())
+  name          String
+  category      String   // Cement, Steel, Sand, Aggregate, etc.
+  unit          String   // kg, m3, ton, piece
+  
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  prices        MaterialPrice[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([companyId])
+  @@index([category])
+}
+
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String
+  email         String?
+  phone         String?
+  location      String?
+  
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  prices        MaterialPrice[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+model MaterialPrice {
+  id            String   @id @default(cuid())
+  price         Float
+  currency      String   @default("EGP")
+  
+  materialId    String
+  material      Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  
+  supplierId    String
+  supplier      Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  
+  region        String?
+  validFrom     DateTime @default(now())
+  validUntil    DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([materialId, supplierId, region])
+  @@index([materialId])
+  @@index([supplierId])
+}
+
+model RiskFlag {
+  id            String   @id @default(cuid())
+  type          RiskType
+  severity      Int      // 0-100
+  description   String
+  recommendation String?
+  
+  tenderId      String
+  boqItemId     String?
+  
+  createdAt     DateTime @default(now())
+  
+  @@index([tenderId])
+  @@index([boqItemId])
+}
+
+enum RiskType {
+  QUANTITY_DISCREPANCY
+  MISSING_SPECIFICATION
+  PRICE_VOLATILITY
+  INCOMPLETE_DRAWINGS
+  UNUSUAL_RATE
+  SCOPE_GAP
+  DELIVERY_RISK
+  REGULATION_CHANGE
+}
+
+model HistoricalBid {
+  id            String   @id @default(cuid())
+  
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  tenderId      String?
+  tender        Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+  
+  clientName    String
+  projectName   String
+  
+  estimatedCost Float
+  bidAmount     Float
+  margin        Float    // percentage
+  
+  status        BidResult
+  winningBid    Float?
+  
+  createdAt     DateTime @default(now())
+  
+  @@index([companyId])
+  @@index([status])
+}
+
+enum BidResult {
+  WON
+  LOST
+  PENDING
+}
+
+model Report {
+  id            String   @id @default(cuid())
+  
+  tenderId      String
+  
+  type          ReportType // BOQ_EXPORT, COST_BREAKDOWN, PROPOSAL, SUMMARY, PDF
+  content       String?    // JSON or text content
+  
+  generatedAt   DateTime @default(now())
+  
+  @@index([tenderId])
+  @@index([type])
+}
+
+enum ReportType {
+  BOQ_EXCEL
+  COST_BREAKDOWN
+  FINANCIAL_PROPOSAL
+  TENDER_SUMMARY
+  PDF_REPORT
+}
