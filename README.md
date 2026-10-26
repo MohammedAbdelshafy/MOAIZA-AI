@@ -1,4 +1,4 @@
-# Construction Tender Review (MOAIZA)
+# MOAIZA-AI
 
 A prototype for reviewing construction tender documents, organizing bills of quantities (BOQs), preparing cost estimates and flagging missing information. Treat every result as a draft until the calculations, source data, permissions and deployment are checked for the intended workflow.
 
