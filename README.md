@@ -2,7 +2,7 @@
 
 A prototype for reviewing construction tender documents, organizing bills of quantities (BOQs), preparing cost estimates and flagging missing information. Treat every result as a draft until the calculations, source data, permissions and deployment are checked for the intended workflow.
 
-## 🎯 Overview
+## What the project is meant to help with
 
 The project is intended for construction teams in Egypt and the GCC. The scope includes document intake, BOQ review, cost estimates and bid-preparation support; verify which features are connected and working before using it with a live tender.
 
@@ -29,7 +29,7 @@ The project is intended for construction teams in Egypt and the GCC. The scope i
 - **Authentication**: NextAuth.js
 - **Deployment**: Vercel
 
-## 📋 Prerequisites
+## What you need
 
 - Node.js 18+ and npm 9+
 - PostgreSQL 14+ (local or Supabase)
