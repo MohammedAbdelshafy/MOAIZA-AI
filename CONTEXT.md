@@ -2,11 +2,11 @@
 type: repository
 status: candidate
 owner_repo: MohammedAbdelshafy/MOAIZA-AI
-product_name: Construction Tender Assistant
+product_name: Construction Tender Review
 source_of_truth: https://github.com/MohammedAbdelshafy/MOAIZA-AI
 ---
 
-# Construction Tender Assistant CONTEXT
+# Construction Tender Review CONTEXT
 
 One job: help construction teams organize tender documents, bills of quantities, estimates and missing-information flags. The repository's current production readiness must be verified before customer use.
 
