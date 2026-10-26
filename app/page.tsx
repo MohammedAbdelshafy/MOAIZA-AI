@@ -11,7 +11,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-bold text-primary">
-              🏗️ MOAIZA AI
+              🏗️ Construction Tender Review
             </div>
             <div className="flex gap-4">
               <Link
@@ -38,7 +38,7 @@ export default function HomePage() {
             AI-Powered Construction Bidding
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
-            Upload tenders, extract BOQs, calculate costs, and generate winning bids with AI assistance.
+            Upload tenders, extract BOQs, calculate costs, and generate review-ready bids with AI assistance.
             Built for construction companies in Egypt and GCC markets.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -111,9 +111,9 @@ export default function HomePage() {
       {/* CTA Section */}
       <div className="bg-primary text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Build Winning Bids?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Build review-ready bids?</h2>
           <p className="text-lg mb-8 opacity-90">
-            Join construction companies across Egypt and GCC countries using MOAIZA AI
+            Join construction companies across Egypt and GCC countries using Construction Tender Review
           </p>
           <Link
             href="/register"
@@ -127,7 +127,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2026 MOAIZA AI. All rights reserved.</p>
+          <p>&copy; 2026 Construction Tender Review. All rights reserved.</p>
         </div>
       </footer>
     </div>
