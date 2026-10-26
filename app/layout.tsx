@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MOAIZA AI - Construction Bidding Platform',
+  title: 'Construction Tender Review - Construction Bidding Platform',
   description: 'AI-powered platform for construction tender analysis, BOQ extraction, and bid optimization',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
 };
