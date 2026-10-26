@@ -3,8 +3,8 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MOAIZA AI - Construction Bidding Platform',
-  description: 'AI-powered platform for construction tender analysis, BOQ extraction, and bid optimization',
+  title: 'Construction Tender Review',
+  description: 'Review tender documents, organize BOQ items and compare cost assumptions. Check the configured features before using it for a live bid.',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
 };
 
