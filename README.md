@@ -1,19 +1,19 @@
-# MOAIZA AI - Construction Tender Analysis Platform
+# Construction Tender Assistant (MOAIZA)
 
-A production-ready, AI-powered web application that helps construction companies analyze tenders, extract BOQs, estimate costs, and generate winning bids.
+A prototype for reviewing construction tender documents, organizing bills of quantities (BOQs), preparing cost estimates and flagging missing information. Treat every result as a draft until the calculations, source data, permissions and deployment are checked for the intended workflow.
 
 ## 🎯 Overview
 
-MOAIZA AI is a comprehensive SaaS platform designed for construction professionals across Egypt and GCC markets. It leverages AI to automate tender analysis, cost estimation, and bid optimization.
+The project is intended for construction teams in Egypt and the GCC. The scope includes document intake, BOQ review, cost estimates and bid-preparation support; verify which features are connected and working before using it with a live tender.
 
 ### Key Features
 
 - **Tender Upload**: Support for PDF, Excel, DOCX, and ZIP files
-- **AI Analysis**: Automatic BOQ extraction with confidence scoring
-- **Cost Estimation**: Intelligent cost calculation with multiple strategies
+- **Document review**: BOQ extraction with confidence scoring, where the configured service supports it
+- **Cost estimates**: Calculate costs using the available methods and supplied inputs
 - **Risk Detection**: Identify risks and missing information
-- **Pricing Engine**: Dynamic material pricing from multiple suppliers
-- **Bid Strategy**: Aggressive, Balanced, or Conservative bidding modes
+- **Supplier prices**: Organize material prices from configured sources
+- **Bid scenarios**: Compare aggressive, balanced or conservative assumptions
 - **Report Generation**: Excel, PDF, and proposal exports
 - **Multi-language**: Arabic and English support with RTL
 - **Dark Mode**: Full dark mode support
@@ -25,7 +25,7 @@ MOAIZA AI is a comprehensive SaaS platform designed for construction professiona
 - **Backend**: Next.js API Routes
 - **Database**: PostgreSQL with Prisma ORM
 - **Storage**: Supabase Storage for file uploads
-- **AI**: OpenAI API for document analysis
+- **Document-processing integration**: OpenAI API support; verify credentials and output quality before use
 - **Authentication**: NextAuth.js
 - **Deployment**: Vercel
 
@@ -36,7 +36,11 @@ MOAIZA AI is a comprehensive SaaS platform designed for construction professiona
 - OpenAI API key
 - Supabase account (optional, for managed database)
 
-## 🚀 Getting Started
+## Getting started
+
+**Customer-facing name:** Construction Tender Assistant. The repository slug and internal identifiers remain MOAIZA-AI for compatibility.
+
+The features listed here describe the intended product scope. Do not treat the project as production-ready until authentication, access control, database isolation, file handling, calculations, tests and deployment have been verified.
 
 ### 1. Clone and Install Dependencies
 
