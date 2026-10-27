@@ -38,7 +38,7 @@ The project is intended for construction teams in Egypt and the GCC. The scope i
 
 ## Getting started
 
-**Customer-facing name:** Construction Tender Assistant. The repository slug and internal identifiers remain MOAIZA-AI for compatibility.
+
 
 The features listed here describe the intended product scope. Do not treat the project as production-ready until authentication, access control, database isolation, file handling, calculations, tests and deployment have been verified.
 
